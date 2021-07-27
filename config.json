@@ -1,0 +1,11 @@
+{
+  "debug": false,
+  "rabbit": {
+    "address": "localhost",
+    "port": "15672"
+  },
+  "grpc": {
+    "address": "localhost",
+    "port": "12340"
+  }
+}
