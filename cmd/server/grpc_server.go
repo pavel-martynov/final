@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 
 	"final/config"
-	pb "final/grpc"
+	pb "final/grpc_service"
 )
 
 type server struct {
