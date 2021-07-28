@@ -2,6 +2,7 @@ package grpcServer
 
 import (
 	"context"
+	"final/internal/message_sender"
 	"fmt"
 	"net"
 
@@ -14,15 +15,18 @@ import (
 
 type server struct {
 	pb.UnimplementedMessageServiceServer
+	sender *message_sender.MsgSender
 }
 
 func (s *server) SendAction(_ context.Context, in *pb.Action) (*pb.Result, error) {
 	logrus.Infof("Received action from client: %s", in.Type)
 
+	s.sender.Send(in)
+
 	return &pb.Result{Success: true}, nil
 }
 
-func StartGRPCServer(config config.Config) {
+func StartGRPCServer(config config.Config, sender *message_sender.MsgSender) {
 	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", config.GRPC.Addr, config.GRPC.Port))
 	if err != nil {
 		logrus.Fatal(err)
@@ -30,7 +34,11 @@ func StartGRPCServer(config config.Config) {
 
 	s := grpc.NewServer()
 
-	pb.RegisterMessageServiceServer(s, &server{})
+	pb.RegisterMessageServiceServer(s, &server{
+		sender: sender,
+	})
+
+	defer s.Stop()
 
 	if err := s.Serve(lis); err != nil {
 		logrus.Fatal(err)

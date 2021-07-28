@@ -2,6 +2,7 @@ package rabbit
 
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 )
@@ -10,19 +11,12 @@ func NewConn() (*amqp.Connection, error) {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672")
 	checkErrors(err)
 
-	defer func() {
-		checkErrors(conn.Close())
-	}()
-
 	ch, err := conn.Channel()
 	checkErrors(err)
+	fmt.Println("connected ch")
 
-	defer func() {
-		checkErrors(ch.Close())
-	}()
-
-	q1, err := ch.QueueDeclare(
-		"hello",
+	_, err = ch.QueueDeclare(
+		"actions",
 		false,
 		false,
 		false,
@@ -31,7 +25,7 @@ func NewConn() (*amqp.Connection, error) {
 	)
 	checkErrors(err)
 
-	q2, err := ch.QueueDeclare(
+	/*q2, err := ch.QueueDeclare(
 		"hello",
 		false,
 		false,
@@ -60,6 +54,7 @@ func NewConn() (*amqp.Connection, error) {
 	)
 
 	checkErrors(err)
+	*/
 
 	return conn, nil
 }

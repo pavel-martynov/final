@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -13,22 +12,22 @@ type RabbitConfig struct {
 	Port string `json:"port"`
 }
 
-type GRPCConfig struct {
+type ServerConfig struct {
 	Addr string `json:"address"`
 	Port string `json:"port"`
 }
 
 type Config struct {
-	Debug		bool		`json:"debug"`
-	Rabbit		RabbitConfig 	`json:"rabbit"`
-	GRPC	GRPCConfig 	`json:"grpc"`
+	Debug  bool         `json:"debug"`
+	Rabbit RabbitConfig `json:"rabbit"`
+	GRPC   ServerConfig   `json:"grpc"`
+	HTTP   ServerConfig   `json:"http"`
 }
 
 func InitConfig() (*Config, error) {
 	f, err := os.Open("./config.json")
 
 	if err != nil {
-		fmt.Println(os.Getwd())
 		log.Fatal(err)
 
 		return nil, err

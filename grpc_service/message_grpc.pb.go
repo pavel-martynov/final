@@ -38,7 +38,7 @@ func (c *messageServiceClient) SendAction(ctx context.Context, in *Action, opts 
 	return out, nil
 }
 
-// MessageServiceServer is the server API for MessageService service.
+// MessageServiceServer is the grps_server API for MessageService service.
 // All implementations must embed UnimplementedMessageServiceServer
 // for forward compatibility
 type MessageServiceServer interface {
