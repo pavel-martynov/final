@@ -1,4 +1,4 @@
-package grpcServer
+package grpc_server
 
 import (
 	"context"

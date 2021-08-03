@@ -8,8 +8,10 @@ import (
 )
 
 type RabbitConfig struct {
-	Addr string `json:"address"`
-	Port string `json:"port"`
+	User     string `json:"user"`
+	Password string `json:"password"`
+	Addr     string `json:"address"`
+	Port     string `json:"port"`
 }
 
 type ServerConfig struct {
@@ -18,10 +20,9 @@ type ServerConfig struct {
 }
 
 type Config struct {
-	Debug  bool         `json:"debug"`
 	Rabbit RabbitConfig `json:"rabbit"`
-	GRPC   ServerConfig   `json:"grpc"`
-	HTTP   ServerConfig   `json:"http"`
+	GRPC   ServerConfig `json:"grpc"`
+	HTTP   ServerConfig `json:"http"`
 }
 
 func InitConfig() (*Config, error) {

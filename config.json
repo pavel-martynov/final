@@ -1,6 +1,7 @@
 {
-  "debug": false,
   "rabbit": {
+    "user": "guest",
+    "password": "guest",
     "address": "localhost",
     "port": "15672"
   },

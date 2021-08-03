@@ -1,19 +1,18 @@
 package main
 
 import (
-	httpServer "final/cmd/http_server"
-	"final/internal/message_sender"
-	"final/internal/rabbit"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"log"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
 
-	grpcServer "final/cmd/grps_server"
+	grpc_server "final/cmd/grpc_server"
+	http_server "final/cmd/http_server"
 	"final/config"
+	"final/internal/message_sender"
+	"final/internal/rabbit"
 )
 
 func setupCloseHandler(callback func()) {
@@ -32,30 +31,29 @@ func main() {
 	cfg, err := config.InitConfig()
 
 	if err != nil {
-		logrus.Fatal(err)
+		log.Fatal(err)
 	}
 
-	conn, err := rabbit.NewConn()
-
+	conn, err := rabbit.NewConnection(cfg)
 
 	if err != nil {
-		logrus.Fatal(err)
+		log.Fatal(err)
 	}
 
 	defer conn.Close()
 
-	ch, err := conn.Channel()
+	rabbitCh, err := conn.Channel()
 	if err != nil {
-		logrus.Fatal(err)
+		log.Fatal(err)
 	}
 
-	defer ch.Close()
+	defer rabbitCh.Close()
 
-	msgSender := message_sender.NewMsgSender(ch, "actions")
+	msgSender := message_sender.NewMsgSender(rabbitCh, "actions")
 
-	go grpcServer.StartGRPCServer(*cfg, msgSender)
+	go grpc_server.StartGRPCServer(*cfg, msgSender)
 
-	go httpServer.StartHTTPServer(*cfg, msgSender)
+	go http_server.StartHTTPServer(*cfg, msgSender)
 
 	wg.Add(1)
 	setupCloseHandler(wg.Done)
