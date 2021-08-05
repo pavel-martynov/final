@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 )
 
@@ -18,11 +17,10 @@ func NewConnection(cfg *config.Config) (*amqp.Connection, error) {
 		cfg.Rabbit.Port,
 	)
 	conn, err := amqp.Dial(url)
-	checkErrors(err)
+	checkErrors(err, fmt.Sprintf("Rabbit dial to %s ", url))
 
 	ch, err := conn.Channel()
-	checkErrors(err)
-	log.Println("connected ch")
+	checkErrors(err, "rabbit channel()")
 
 	_, err = ch.QueueDeclare(
 		"actions",
@@ -32,13 +30,13 @@ func NewConnection(cfg *config.Config) (*amqp.Connection, error) {
 		false,
 		nil,
 	)
-	checkErrors(err)
+	checkErrors(err, "QueueDeclare")
 
 	return conn, nil
 }
 
-func checkErrors(err error) {
+func checkErrors(err error, details string) {
 	if err != nil {
-		logrus.Fatal(err)
+		log.Fatal(details, err)
 	}
 }

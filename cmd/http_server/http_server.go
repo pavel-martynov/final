@@ -2,9 +2,8 @@ package http_server
 
 import (
 	"fmt"
+	"log"
 	"net/http"
-
-	"github.com/sirupsen/logrus"
 
 	"final/config"
 	"final/internal/message_sender"
@@ -15,10 +14,10 @@ func StartHTTPServer(config config.Config, sender *message_sender.MsgSender) {
 	r := router.NewRouter(sender)
 	addr := fmt.Sprintf("%s:%s", config.HTTP.Addr, config.HTTP.Port)
 
-	logrus.Info(fmt.Sprintf("Starting HTTP server at %s", addr))
+	log.Println(fmt.Sprintf("Starting HTTP server at %s", addr))
 
 	if err := http.ListenAndServe(addr, r); err != nil {
-		logrus.Fatal(err)
+		log.Fatal(err)
 	} else {
 		fmt.Println("started")
 	}

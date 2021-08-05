@@ -31,20 +31,20 @@ func main() {
 	cfg, err := config.InitConfig()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Init config", err)
 	}
 
 	conn, err := rabbit.NewConnection(cfg)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Rabbit new connection", err)
 	}
 
 	defer conn.Close()
 
 	rabbitCh, err := conn.Channel()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Rabbit channel", err)
 	}
 
 	defer rabbitCh.Close()

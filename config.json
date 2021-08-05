@@ -3,7 +3,7 @@
     "user": "guest",
     "password": "guest",
     "address": "localhost",
-    "port": "15672"
+    "port": "5672"
   },
   "grpc": {
     "address": "localhost",

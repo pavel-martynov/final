@@ -4,9 +4,9 @@ import (
 	"context"
 	"final/internal/message_sender"
 	"fmt"
+	"log"
 	"net"
 
-	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 
 	"final/config"
@@ -19,7 +19,7 @@ type server struct {
 }
 
 func (s *server) SendAction(_ context.Context, in *pb.Action) (*pb.Result, error) {
-	logrus.Infof("Received action from client: %s", in.Type)
+	log.Printf("Received action from client: %s\n", in.Type)
 
 	s.sender.Send(in)
 
@@ -29,7 +29,7 @@ func (s *server) SendAction(_ context.Context, in *pb.Action) (*pb.Result, error
 func StartGRPCServer(config config.Config, sender *message_sender.MsgSender) {
 	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", config.GRPC.Addr, config.GRPC.Port))
 	if err != nil {
-		logrus.Fatal(err)
+		log.Fatal("grpc server listen", err)
 	}
 
 	s := grpc.NewServer()
@@ -41,7 +41,7 @@ func StartGRPCServer(config config.Config, sender *message_sender.MsgSender) {
 	defer s.Stop()
 
 	if err := s.Serve(lis); err != nil {
-		logrus.Fatal(err)
+		log.Fatal("grpc serve", err)
 	} else {
 		fmt.Println("started")
 	}
