@@ -10,6 +10,8 @@ import (
 	"final/internal/router"
 )
 
+// for the future, http separete service can be replaced by https://github.com/grpc-ecosystem/grpc-gateway
+// It's not easy for understanding now, but keep in mind
 func StartHTTPServer(config config.Config, sender *message_sender.MsgSender) {
 	r := router.NewRouter(sender)
 	addr := fmt.Sprintf("%s:%s", config.HTTP.Addr, config.HTTP.Port)

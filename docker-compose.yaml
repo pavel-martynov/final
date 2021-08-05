@@ -8,3 +8,5 @@ services:
       - "5672:5672"
     labels:
       NAME: "rabbitmq"
+
+# it's good to have build commands in Makefile

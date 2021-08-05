@@ -1,3 +1,4 @@
+// better to hav full path github.com/pavel-martynov/final. It works as a packege from github
 module final
 
 go 1.16

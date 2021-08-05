@@ -8,6 +8,7 @@ import (
 	"sync"
 	"syscall"
 
+	// no needs to have aliases
 	grpc_server "final/cmd/grpc_server"
 	http_server "final/cmd/http_server"
 	"final/config"
@@ -18,6 +19,7 @@ import (
 func setupCloseHandler(callback func()) {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	// No needs to have goroutine here as a last operation and WaitGroup is overkill in main func
 	go func() {
 		<-c
 		log.Println("\nCtrl-C pressed in terminal. Aborting...")

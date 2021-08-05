@@ -13,6 +13,7 @@ type Handlers struct {
 	sender *message_sender.MsgSender
 }
 
+// In case of error no understanding what went wrong. I mean error message
 func (h *Handlers) PostAction(w http.ResponseWriter, r *http.Request) {
 	b, err := io.ReadAll(r.Body)
 
@@ -30,6 +31,7 @@ func (h *Handlers) PostAction(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
+	// silent error inside the function, not good for a client
 	h.sender.Send(message)
 
 	w.WriteHeader(http.StatusOK)
