@@ -3,39 +3,42 @@ package message_sender
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/sirupsen/logrus"
+	"log"
+
 	"github.com/streadway/amqp"
 )
 
 type MsgSender struct {
-	ch *amqp.Channel
+	ch        *amqp.Channel
 	queueName string
 }
 
-func NewMsgSender (ch *amqp.Channel, queueName string) *MsgSender {
+func NewMsgSender(ch *amqp.Channel, queueName string) *MsgSender {
 	m := MsgSender{
-		ch: ch,
+		ch:        ch,
 		queueName: queueName,
 	}
 
 	return &m
 }
 
-func (m *MsgSender) Send (msg interface{}) {
+func (m *MsgSender) Send(msg interface{}) {
 	fmt.Println(msg)
 	msgJson, err := json.Marshal(msg)
 
 	if err != nil {
-		logrus.Error(err)
+		log.Println("Error marshalling message")
 		return
 	}
 
+	log.Println("sending message to rabbit", msg)
+
 	m.ch.Publish(
-		"",     // exchange
+		"",          // exchange
 		m.queueName, // routing key
-		false,  // mandatory
-		false,  // immediate
-		amqp.Publishing {
+		false,       // mandatory
+		false,       // immediate
+		amqp.Publishing{
 			ContentType: "text/json",
 			Body:        msgJson,
 		},

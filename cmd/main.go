@@ -1,33 +1,27 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
 
-	grpc_server "final/cmd/grpc_server"
-	http_server "final/cmd/http_server"
+	"final/cmd/grpc_server"
+	"final/cmd/http_server"
 	"final/config"
 	"final/internal/message_sender"
 	"final/internal/rabbit"
 )
 
-func setupCloseHandler(callback func()) {
-	c := make(chan os.Signal)
+func setupTerminationHandler() chan os.Signal {
+	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	go func() {
-		<-c
-		log.Println("\nCtrl-C pressed in terminal. Aborting...")
-		fmt.Println("ENDING")
-		callback()
-	}()
+
+	return c
 }
 
 func main() {
-	wg := sync.WaitGroup{}
+	c := setupTerminationHandler()
 	cfg, err := config.InitConfig()
 
 	if err != nil {
@@ -55,7 +49,5 @@ func main() {
 
 	go http_server.StartHTTPServer(*cfg, msgSender)
 
-	wg.Add(1)
-	setupCloseHandler(wg.Done)
-	wg.Wait()
+	<-c
 }
